@@ -15,28 +15,33 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
     img: undefined,
   });
 
+  const [inputKey, setInputKey] = useState<number>(Date.now());
+
   const handleTextChange = (text: string) =>
     setMessage((msg) => ({ ...msg, text }));
 
   const handleImageChange = (img?: string) =>
     setMessage((msg) => ({ ...msg, img }));
 
+  const canSend = message.text.trim() !== "" || !!message.img;
+
   const handleSend = () => {
-    if (message.text.trim() || message.img) {
+    if (canSend) {
       const newMessage = {
         ...message,
         id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
       };
       onSend(newMessage);
       setMessage({ id: "", text: "", img: undefined });
+      setInputKey(Date.now());
     }
   };
 
   return (
     <div>
       <MessageTextInput value={message.text} onChange={handleTextChange} />
-      <MessageImageInput onChange={handleImageChange} />
-      <Button variant="contained" onClick={handleSend}>
+      <MessageImageInput key={inputKey} onChange={handleImageChange} />
+      <Button variant="contained" onClick={handleSend} disabled={!canSend}>
         Send
       </Button>
     </div>

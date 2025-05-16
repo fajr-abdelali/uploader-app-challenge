@@ -3,6 +3,7 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./app/theme";
 import TopBarComponent from "./components/topBar/TopBarComponent";
 import type { IMessage } from "./interface/Message";
+import MessageList from "./components/MessageList/MessageList";
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]); // store the sent items
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <TopBarComponent onSend={handleSend}></TopBarComponent>
+      <MessageList messages={messages} />
       <CssBaseline />
     </ThemeProvider>
   );

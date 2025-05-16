@@ -10,6 +10,7 @@ interface ITopBarComponentProp {
 
 const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
   const [message, setMessage] = useState<IMessage>({
+    id: "",
     text: "",
     img: undefined,
   });
@@ -22,8 +23,12 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
 
   const handleSend = () => {
     if (message.text.trim() || message.img) {
-      onSend(message);
-      setMessage({ text: "", img: undefined });
+      const newMessage = {
+        ...message,
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+      };
+      onSend(newMessage);
+      setMessage({ id: "", text: "", img: undefined });
     }
   };
 

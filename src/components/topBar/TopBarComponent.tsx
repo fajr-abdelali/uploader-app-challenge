@@ -23,6 +23,11 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
   const handleImageChange = (img?: string) =>
     setMessage((msg) => ({ ...msg, img }));
 
+  const handleImageDrop = (img: string) => {
+    setMessage((msg) => ({ ...msg, img }));
+    setInputKey(Date.now());
+  };
+
   const canSend = message.text.trim() !== "" || !!message.img;
 
   const handleSend = () => {
@@ -39,7 +44,7 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
 
   return (
     <div>
-      <MessageTextInput value={message.text} onChange={handleTextChange} />
+      <MessageTextInput value={message.text} onChange={handleTextChange} onImageDrop={handleImageDrop} />
       <MessageImageInput key={inputKey} onChange={handleImageChange} />
       <Button variant="contained" onClick={handleSend} disabled={!canSend}>
         Send

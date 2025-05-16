@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-import theme from './app/theme';
-import UploaderBar from './app/components/UploaderBar';
-import SentItemComponent from './app/components/SentItem';
-import type { Attachment, SentItem } from './app/types';
-import Page from './app/Page';
+import React, { useState } from "react";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
+import theme from "./app/theme";
+import TopBarComponent from "./components/topBar/TopBarComponent";
+import type { IMessage } from "./interface/Message";
 
 const App: React.FC = () => {
-  const [items, setItems] = useState<ItemType[]>([]);  // store the sent items
+  const [items, setItems] = useState(); // store the sent items
+
+  const handleSend = (message: IMessage) => {
+    console.log(message);
+  };
 
   // TODO: handleSend(text, attachments)
 
@@ -19,8 +21,8 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <TopBarComponent onSend={handleSend}></TopBarComponent>
       <CssBaseline />
-      <Page/>
     </ThemeProvider>
   );
 };

@@ -3,12 +3,29 @@ import type { IMessage } from "../../interface/Message";
 
 interface MessageListProp {
   messages: IMessage[];
+  selectedIds: string[];
+  onToggleSelect: (id: string) => void;
+  onDelete: (ids: string[]) => void;
+  onExport: (ids: string[]) => void;
 }
 
-const MessageList = ({ messages }: MessageListProp) => (
+const MessageList = ({
+  messages,
+  selectedIds,
+  onToggleSelect,
+  onDelete,
+  onExport,
+}: MessageListProp) => (
   <div>
     {messages.map((msg) => (
-      <MessageItem key={msg.id} message={msg} />
+      <MessageItem
+        key={msg.id}
+        message={msg}
+        isSelected={selectedIds.includes(msg.id)}
+        onToggleSelect={onToggleSelect}
+        onDelete={onDelete}
+        onExport={onExport}
+      />
     ))}
   </div>
 );

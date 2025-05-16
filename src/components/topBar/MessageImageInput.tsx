@@ -1,26 +1,37 @@
 import { Input } from "@mui/material";
 
 interface MessageImageInputProps {
-  onChange: (img: string | undefined) => void;
+  onChange: (images: string[]) => void;
 }
 
 const MessageImageInput = ({ onChange }: MessageImageInputProps) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => onChange(reader.result as string);
-      reader.readAsDataURL(file);
+    if (files.length > 0) {
+      const imagePromises = files.map(
+        (file) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          })
+      );
+
+      const images = await Promise.all(imagePromises);
+      onChange(images);
     } else {
-      onChange(undefined);
+      onChange([]);
     }
   };
 
   return (
     <Input
       type="file"
-      inputProps={{ accept: "image/*" }}
+      inputProps={{
+        accept: "image/*",
+        multiple: true,
+      }}
       onChange={handleFileChange}
     />
   );

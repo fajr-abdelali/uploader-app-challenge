@@ -9,13 +9,15 @@ const MessageItem = ({ message }: MessageItemProp) => (
   <Card sx={{ marginBottom: 2 }}>
     <CardContent>
       <Typography variant="body1">{message.text}</Typography>
-      {message.img && (
+      {message.images && (
         <Box mt={1}>
-          <img
-            src={message.img}
-            alt="attachment"
-            style={{ maxWidth: "100px", maxHeight: "100px" }}
-          />
+          {message.images.map((img) => (
+            <img
+              src={img}
+              alt="attachment"
+              style={{ maxWidth: "100px", maxHeight: "100px" }}
+            />
+          ))}
         </Box>
       )}
     </CardContent>

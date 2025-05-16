@@ -1,8 +1,8 @@
 import { Button } from "@mui/material";
-import { useState } from "react";
-import MessageTextInput from "./MessageTextInput";
-import type { IMessage } from "../../interface/Message";
 import MessageImageInput from "./MessageImageInput";
+import MessageTextInput from "./MessageTextInput";
+import { useState } from "react";
+import type { IMessage } from "../../interface/Message";
 
 interface ITopBarComponentProp {
   onSend: (message: IMessage) => void;
@@ -12,23 +12,21 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
   const [message, setMessage] = useState<IMessage>({
     id: "",
     text: "",
-    img: undefined,
+    images: [], // Changed to array
   });
 
   const [inputKey, setInputKey] = useState<number>(Date.now());
 
   const handleTextChange = (text: string) =>
-    setMessage((msg) => ({ ...msg, text }));
+    setMessage(msg => ({ ...msg, text }));
 
-  const handleImageChange = (img?: string) =>
-    setMessage((msg) => ({ ...msg, img }));
+  const handleImagesChange = (newImages: string[]) =>
+    setMessage(msg => ({ ...msg, images: [...msg.images, ...newImages] }));
 
-  const handleImageDrop = (img: string) => {
-    setMessage((msg) => ({ ...msg, img }));
-    setInputKey(Date.now());
-  };
+  const handleImagesDrop = (newImages: string[]) =>
+    setMessage(msg => ({ ...msg, images: [...msg.images, ...newImages] }));
 
-  const canSend = message.text.trim() !== "" || !!message.img;
+  const canSend = message.text.trim() !== "" || message.images.length > 0;
 
   const handleSend = () => {
     if (canSend) {
@@ -37,20 +35,26 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
         id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
       };
       onSend(newMessage);
-      setMessage({ id: "", text: "", img: undefined });
+      setMessage({ id: "", text: "", images: [] });
       setInputKey(Date.now());
     }
   };
 
   return (
     <div>
-      <MessageTextInput value={message.text} onChange={handleTextChange} onImageDrop={handleImageDrop} />
-      <MessageImageInput key={inputKey} onChange={handleImageChange} />
-      <Button variant="contained" onClick={handleSend} disabled={!canSend}>
+      <MessageTextInput 
+        value={message.text} 
+        onChange={handleTextChange}
+        onImagesDrop={handleImagesDrop}
+      />
+      <MessageImageInput key={inputKey} onChange={handleImagesChange} />
+      <Button
+        variant="contained"
+        onClick={handleSend}
+        disabled={!canSend}
+      >
         Send
       </Button>
     </div>
   );
 };
-
-export default TopBarComponent;

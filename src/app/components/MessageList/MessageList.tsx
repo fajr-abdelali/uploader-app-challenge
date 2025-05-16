@@ -1,5 +1,5 @@
 import MessageItem from "./MessageItem";
-import type { IMessage } from "../../interface/Message";
+import type { IMessage } from "../../app/interface/Message";
 
 interface MessageListProp {
   messages: IMessage[];

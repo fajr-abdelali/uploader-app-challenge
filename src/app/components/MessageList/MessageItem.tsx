@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Box, Checkbox, Button } from "@mui/material";
-import type { IMessage } from "../../interface/Message";
+import type { IMessage } from "../../app/interface/Message";
 
 interface MessageItemProp {
   message: IMessage;

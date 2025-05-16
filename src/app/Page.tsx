@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
-import MessageList from "../components/MessageList/MessageList";
-import BulkActions from "../components/BulkActions";
-import TopBarComponent from "../components/topBar/TopBarComponent";
+import { Container, CssBaseline, ThemeProvider } from "@mui/material";
+import MessageList from "./components/MessageList/MessageList";
+import BulkActions from "./components/BulkActions";
+import TopBarComponent from "./components/topBar/TopBarComponent";
 import theme from "./theme";
-import type { IMessage } from "../interface/Message";
+import type { IMessage } from "./interface/Message";
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]); // store the sent items
@@ -52,29 +52,29 @@ const App: React.FC = () => {
   };
 
   return (
+    <Container maxWidth="lg">
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {/* TODO: render UploaderBar */}
+        <TopBarComponent onSend={handleSend} />
 
+        {/* TODO: Bulk actions */}
+        <BulkActions
+          selectedIds={selectedIds}
+          onDelete={handleDelete}
+          onExport={handleExport}
+        />
 
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {/* TODO: render UploaderBar */}
-      <TopBarComponent onSend={handleSend} />
-
-      {/* TODO: Bulk actions */}
-      <BulkActions
-        selectedIds={selectedIds}
-        onDelete={handleDelete}
-        onExport={handleExport}
-      />
-
-      {/* TODO: map items to their respective components */}
-      <MessageList
-        messages={messages}
-        selectedIds={selectedIds}
-        onToggleSelect={handleToggleSelect}
-        onDelete={handleDelete}
-        onExport={handleExport}
-      />
-    </ThemeProvider>
+        {/* TODO: map items to their respective components */}
+        <MessageList
+          messages={messages}
+          selectedIds={selectedIds}
+          onToggleSelect={handleToggleSelect}
+          onDelete={handleDelete}
+          onExport={handleExport}
+        />
+      </ThemeProvider>
+    </Container>
   );
 };
 

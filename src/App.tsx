@@ -4,6 +4,7 @@ import theme from "./app/theme";
 import TopBarComponent from "./components/topBar/TopBarComponent";
 import type { IMessage } from "./interface/Message";
 import MessageList from "./components/MessageList/MessageList";
+import BulkActions from "./components/BulkActions";
 
 const App: React.FC = () => {
   const [messages, setMessages] = useState<IMessage[]>([]); // store the sent items
@@ -49,24 +50,11 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <TopBarComponent onSend={handleSend} />
-      {selectedIds.length > 0 && (
-        <Box sx={{ display: "flex", gap: 2, p: 2, bgcolor: "background.paper" }}>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => handleDelete(selectedIds)}
-          >
-            Delete Selected ({selectedIds.length})
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleExport(selectedIds)}
-          >
-            Export Selected ({selectedIds.length})
-          </Button>
-        </Box>
-      )}
+      <BulkActions
+        selectedIds={selectedIds}
+        onDelete={handleDelete}
+        onExport={handleExport}
+      />
       <MessageList
         messages={messages}
         selectedIds={selectedIds}

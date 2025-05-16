@@ -12,7 +12,7 @@ const MessageTextInput = ({ value, onChange, onImagesDrop }: MessageTextInputPro
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (e.dataTransfer.types.includes('Files')) {
+    if (Array.from(e.dataTransfer.types).some((type) => type.toLowerCase() === "files")) {
       setIsDragging(true);
     }
   };
@@ -23,25 +23,35 @@ const MessageTextInput = ({ value, onChange, onImagesDrop }: MessageTextInputPro
     e.preventDefault();
     setIsDragging(false);
 
-    const files = Array.from(e.dataTransfer.files)
-      .filter(file => file.type.startsWith('image/'));
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
 
-    if (files.length > 0) {
-      const imagePromises = files.map(file => 
-        new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        })
+    const maxSize = 5 * 1024 * 1024;
+    const validFiles = files.filter((file) => file.size <= maxSize);
+
+    if (validFiles.length > 0) {
+      const imagePromises = validFiles.map(
+        (file) =>
+          new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = () => reject(new Error("Failed to read file"));
+            reader.readAsDataURL(file);
+          })
       );
-      
-      const images = await Promise.all(imagePromises);
-      onImagesDrop(images);
+
+      try {
+        const images = await Promise.all(imagePromises);
+        onImagesDrop(images);
+      } catch (error) {
+        console.error("Error processing images:", error);
+      }
     }
   };
 
   return (
-    <Box 
+    <Box
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -49,16 +59,17 @@ const MessageTextInput = ({ value, onChange, onImagesDrop }: MessageTextInputPro
     >
       <Input
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder="Type your message"
         fullWidth
         multiline
         sx={{
-          border: isDragging ? '2px dashed red' : 'none',
-          minHeight: '100px'
+          border: isDragging ? "2px dashed red" : "none",
+          minHeight: "100px",
+          padding: 1,
         }}
+        aria-label="Message input"
       />
-      
       {isDragging && (
         <Box
           position="absolute"

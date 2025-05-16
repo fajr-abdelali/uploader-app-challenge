@@ -1,60 +1,60 @@
-import { Button } from "@mui/material";
+import { useState } from "react";
 import MessageImageInput from "./MessageImageInput";
 import MessageTextInput from "./MessageTextInput";
-import { useState } from "react";
+import { Button } from "@mui/material";
 import type { IMessage } from "../../interface/Message";
 
 interface ITopBarComponentProp {
   onSend: (message: IMessage) => void;
 }
 
-const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
-  const [message, setMessage] = useState<IMessage>({
-    id: "",
-    text: "",
-    images: [], // Changed to array
-  });
+function TopBarComponent({ onSend }: ITopBarComponentProp) {
+  const [text, setText] = useState("");
+  const [images, setImages] = useState<string[]>([]);
 
-  const [inputKey, setInputKey] = useState<number>(Date.now());
+  const handleAddImages = (newImages: string[]) => {
+    setImages((prev) => [...prev, ...newImages]);
+  };
 
-  const handleTextChange = (text: string) =>
-    setMessage(msg => ({ ...msg, text }));
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
-  const handleImagesChange = (newImages: string[]) =>
-    setMessage(msg => ({ ...msg, images: [...msg.images, ...newImages] }));
-
-  const handleImagesDrop = (newImages: string[]) =>
-    setMessage(msg => ({ ...msg, images: [...msg.images, ...newImages] }));
-
-  const canSend = message.text.trim() !== "" || message.images.length > 0;
+  const canSend = text.trim() !== "" || images.length > 0;
 
   const handleSend = () => {
-    if (canSend) {
-      const newMessage = {
-        ...message,
-        id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
-      };
-      onSend(newMessage);
-      setMessage({ id: "", text: "", images: [] });
-      setInputKey(Date.now());
-    }
+    if (!canSend) return;
+    onSend({
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+      text,
+      images,
+    });
+    setText("");
+    setImages([]);
   };
 
   return (
     <div>
-      <MessageTextInput 
-        value={message.text} 
-        onChange={handleTextChange}
-        onImagesDrop={handleImagesDrop}
+      <MessageTextInput
+        value={text}
+        onChange={setText}
+        onImagesDrop={handleAddImages}
       />
-      <MessageImageInput key={inputKey} onChange={handleImagesChange} />
+      <MessageImageInput
+        images={images}
+        onAddImages={handleAddImages}
+        onRemoveImage={handleRemoveImage}
+      />
       <Button
         variant="contained"
         onClick={handleSend}
         disabled={!canSend}
+        sx={{ mt: 2 }}
       >
         Send
       </Button>
     </div>
   );
-};
+}
+
+export default TopBarComponent;

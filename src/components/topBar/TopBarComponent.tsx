@@ -1,9 +1,8 @@
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { useState } from "react";
 import MessageTextInput from "./MessageTextInput";
 import type { IMessage } from "../../interface/Message";
-
-
+import MessageImageInput from "./MessageImageInput";
 
 interface ITopBarComponentProp {
   onSend: (message: IMessage) => void;
@@ -18,6 +17,8 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
   const handleTextChange = (text: string) =>
     setMessage((msg) => ({ ...msg, text }));
 
+  const handleImageChange = (img?: string) =>
+    setMessage((msg) => ({ ...msg, img }));
 
   const handleSend = () => {
     if (message.text.trim() || message.img) {
@@ -29,6 +30,7 @@ const TopBarComponent = ({ onSend }: ITopBarComponentProp) => {
   return (
     <div>
       <MessageTextInput value={message.text} onChange={handleTextChange} />
+      <MessageImageInput onChange={handleImageChange} />
       <Button variant="contained" onClick={handleSend}>
         Send
       </Button>
